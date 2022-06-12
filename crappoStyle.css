@@ -1,0 +1,37 @@
+/* .notPlayerTurn {
+    opacity: 0.5;
+} */
+
+#diceContainer {
+    position: relative;
+    margin: 50px;
+    padding: 50px;
+    width: 300px;
+    height: 200px;
+    background-color: yellow;
+}
+
+.scoreBoard {
+    align-self: center;
+    border: 2px black solid;
+    width: 75px;
+    height: 25px;
+    flex: auto;
+    margin: 10px;
+    margin-left: 50%;
+}
+
+.dice {
+    float: left;
+    width: 35px;
+    margin: 5px;
+    height: 35px;
+    border: 2px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.selected {
+    border: 2px solid red
+}
