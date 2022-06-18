@@ -36,18 +36,18 @@ class NewPlayer {
         this.isFirstRoll = true;
     }
 }
+const players = [];
 
 //make new player function
-// function addNewPlayer(){
-//     const players = [];
-//     const name = prompt('Enter your Name');
-//     players.push(new NewPlayer(name));
-// }
-
-const player1 = new NewPlayer('player1');
+function addNewPlayer(){
+    const name = prompt('Enter your Name');
+    players.push(new NewPlayer(name));
+}
+let currentPlayer = players[0];
+// const player1 = new NewPlayer('player1');
 
 //update currentPlayer with turn order later...
-const currentPlayer = player1;
+// let currentPlayer = players[0];
 
 //create 6 random numbers to an array
 const die1 = new MakeNewDice("dice1");
@@ -100,11 +100,19 @@ function rollActiveDice() {
   renderCurrentScore();
 }
 
+//turn order tracking function
+function turnOrder(){
+  let endingTurnPlayer = players.shift();
+  players.push(endingTurnPlayer);
+}
+
     //end turn function
 function endTurn(){
     currentPlayer.totalScore += currentTurnScore;
     currentPlayer.isFirstRoll = true;  
     resetAllDice();
+    turnOrder();
+    currentPlayer = players[0];
     return currentPlayer.totalScore;
 }
 
