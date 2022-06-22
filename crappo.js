@@ -3,6 +3,7 @@
 //SELECT HTML ELEMENTS
 
 const rollDiceButton = document.getElementById("rollDice");
+const stealButton = document.getElementById('stealButton');
 const endTurnButton = document.getElementById("endTurn");
 const newPlayerButton = document.getElementById("addNewPlayer");
 const diceDiv = document.querySelectorAll("div.dice");
@@ -12,6 +13,7 @@ const scoreBoard = document.querySelector(".scoreBoard");
 //EVENT LISTENERS
 rollDiceButton.addEventListener("click", rollActiveDice);
 endTurnButton.addEventListener("click", endTurn);
+stealButton.addEventListener('click', stealCurrentRoll);
 newPlayerButton.addEventListener('click', addNewPlayer)
 //diceDiv.forEach((dice) => dice.addEventListener("click", selectDice));
 
@@ -37,13 +39,21 @@ class NewPlayer {
     }
 }
 const players = [];
-
+let currentPlayer = null;
 //make new player function
 function addNewPlayer(){
     const name = prompt('Enter your Name');
     players.push(new NewPlayer(name));
+    currentPlayer = players[0]
 }
-let currentPlayer = players[0];
+
+//turn order tracking function
+function turnOrder(){
+  let endingTurnPlayer;
+  players.push(players.shift());
+  currentPlayer = players[0];
+}
+
 // const player1 = new NewPlayer('player1');
 
 //update currentPlayer with turn order later...
@@ -81,7 +91,7 @@ function rollActiveDice() {
   diceArr.forEach(function (die) {
       
     if (!die.locked) {
-        console.log(84, 'ROLLING');
+        console.log(92, 'ROLLING');
       die.value = rollDice();
       //console.log(die);
     }
@@ -100,19 +110,30 @@ function rollActiveDice() {
   renderCurrentScore();
 }
 
-//turn order tracking function
-function turnOrder(){
-  let endingTurnPlayer = players.shift();
-  players.push(endingTurnPlayer);
+//let next player decide to steal current roll.
+const wait = (amount = 0) => new Promise(resolve => setTimeout(resolve, amount));
+async function stealCurrentRoll(){
+  rollActiveDice();
+  stealButton.setAttribute('disabled');
+  stealButton.classList.remove('steal-active')
+  clearTimeout(wait)
 }
 
     //end turn function
-function endTurn(){
+async function endTurn(){
     currentPlayer.totalScore += currentTurnScore;
-    currentPlayer.isFirstRoll = true;  
-    resetAllDice();
-    turnOrder();
-    currentPlayer = players[0];
+    currentPlayer.isFirstRoll = true;
+    if(players[1].totalScore >= 5000){
+      stealButton.removeAttribute('disabled')
+      stealButton.classList.add('steal-active');
+      await wait(5000);
+      resetAllDice();
+      turnOrder();
+    } else{
+      resetAllDice();
+      turnOrder();
+    }
+  
     return currentPlayer.totalScore;
 }
 
@@ -165,12 +186,12 @@ function calculateDiceCount(dice) {
     5: 0,
     6: 0,
   };
-  console.log(145, scoreTracker);
+  
 
   for (const die of dice) {
     scoreTracker[die.value] += 1;
   }
-
+console.log(176, scoreTracker);
   return scoreTracker;
 }
     

@@ -35,3 +35,15 @@
 .selected {
     border: 2px solid red
 }
+
+#stealButton {
+    border: 2px solid black;
+    background-color: green;
+    opacity: 0.2;
+}
+
+.steal-active {
+    border: 2px solid black;
+    background-color: green;
+    opacity: 1;
+}
