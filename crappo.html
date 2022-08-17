@@ -20,29 +20,45 @@
     <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
-    <div class="scoreBoard"></div>
-
-    <div class="playerCard">
-        <button id="addNewPlayer"><i class="bi bi-person-plus"></i></button>
-        <button id="rollDice" class="notPlayerTurn">Roll</button>
-        <button id="stealButton">Steal</button>
-        <button id="endTurn" class="notPlayerTurn">End Turn</button>
-    </div>
-
-    <div id="diceContainer">
-        <div class="dice" id="dice1"></div>
-        <div class="dice" id="dice2"></div>
-        <div class="dice" id="dice3"></div>
-        <div class="dice" id="dice4"></div>
-        <div class="dice" id="dice5"></div>
-        <div class="dice" id="dice6"></div>
-    </div>
-
+    <div class="page-container">
+        <div class="add-player-container">
+            <button id="addNewPlayer"><i class="bi bi-person-plus"></i></button>
+        </div>
+        <div class="player-top-container">
+            <div class="player-card-container">
+                <div class="player-card">
+                    <div class="player-avatar"></div>
+                    <div class="player-info">
+                        <div class="player-name">Player 1</div>
+                        <div class="player-total-score">0</div>
+                    </div>
+                </div>
+            </div>
+            <div class="score-board-container">
+                <div class="score-board"></div>
+            </div>
+            
+        </div>
+        <div class="game-board-container">
+            <div class="game-board">
+                <div class="dice" id="dice1"></div>
+                <div class="dice" id="dice2"></div>
+                <div class="dice" id="dice3"></div>
+                <div class="dice" id="dice4"></div>
+                <div class="dice" id="dice5"></div>
+                <div class="dice" id="dice6"></div>
+            </div>
+        </div>
+        <div class="turn-control-container">
+                <button id="rollDice" class="notPlayerTurn">Roll</button>
+                <button id="stealButton">Steal</button>
+                <button id="endTurn" class="notPlayerTurn">End Turn</button>
+        </div>
+</div>
 
 
 
     <script src="crappo.js" async defer></script>
-    l>
 </body>
 
 </html>

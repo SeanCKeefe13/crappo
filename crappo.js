@@ -6,9 +6,9 @@ const rollDiceButton = document.getElementById("rollDice");
 const stealButton = document.getElementById('stealButton');
 const endTurnButton = document.getElementById("endTurn");
 const newPlayerButton = document.getElementById("addNewPlayer");
-const diceDiv = document.querySelectorAll("div.dice");
+const diceDiv = document.querySelectorAll("div .dice");
 //console.log(diceDiv);
-const scoreBoard = document.querySelector(".scoreBoard");
+const scoreBoard = document.querySelector(".score-board");
 
 //EVENT LISTENERS
 rollDiceButton.addEventListener("click", rollActiveDice);
@@ -116,26 +116,26 @@ async function stealCurrentRoll(){
   rollActiveDice();
   stealButton.setAttribute('disabled');
   stealButton.classList.remove('steal-active')
-  clearTimeout(wait)
+  clearTimeout(wait);
 }
 
     //end turn function
 async function endTurn(){
     currentPlayer.totalScore += currentTurnScore;
     currentPlayer.isFirstRoll = true;
-    if(players[1].totalScore >= 5000){
-      stealButton.removeAttribute('disabled')
-      stealButton.classList.add('steal-active');
-      await wait(5000);
+    // if(players[1].totalScore >= 5000){
+    //   stealButton.removeAttribute('disabled')
+    //   stealButton.classList.add('steal-active');
+    //   turnOrder();
+    //   await wait(5000);
+    //   resetAllDice();
+    // }
       resetAllDice();
       turnOrder();
-    } else{
-      resetAllDice();
-      turnOrder();
+      currentTurnScore = 0;
+      renderCurrentScore();
+      return currentPlayer.totalScore;
     }
-  
-    return currentPlayer.totalScore;
-}
 
 //reset all dice if all dice have been selected for scoring values
 function reRollLockedDiceHandler() {
