@@ -5,7 +5,7 @@
 const rollDiceButton = document.getElementById("rollDice");
 const stealButton = document.getElementById('stealButton');
 const endTurnButton = document.getElementById("endTurn");
-const newPlayerButton = document.getElementById("addNewPlayer");
+const newPlayerButton = document.querySelector(".add-new-player");
 const diceDiv = document.querySelectorAll("div .dice");
 //console.log(diceDiv);
 const scoreBoard = document.querySelector(".score-board");
@@ -32,19 +32,25 @@ class MakeNewDice {
 
 //player character class
 class NewPlayer {
-    constructor(name) {
+    constructor(name, color) {
         this.name = name;
         this.totalScore = 0;
         this.isFirstRoll = true;
+        this.avatarColor = color;
     }
 }
 const players = [];
 let currentPlayer = null;
 //make new player function
+const avatarColors = ['#FF5722', '#E91E63', '#9C27B0', '#673AB7', '#3F51B5', '#2196F3', '#03A9F4', '#00BCD4', '#009688', '#4CAF50', '#FFC107', '#FF9800']
 function addNewPlayer(){
+  let randomIndex = Math.floor(Math.random() * (avatarColors.length));
+  const color = avatarColors[randomIndex];
+
     const name = prompt('Enter your Name');
-    players.push(new NewPlayer(name));
+    players.push(new NewPlayer(name, color));
     currentPlayer = players[0]
+    renderCurrentPlayer();
 }
 
 //turn order tracking function
@@ -52,12 +58,9 @@ function turnOrder(){
   let endingTurnPlayer;
   players.push(players.shift());
   currentPlayer = players[0];
+  renderCurrentPlayer();
 }
 
-// const player1 = new NewPlayer('player1');
-
-//update currentPlayer with turn order later...
-// let currentPlayer = players[0];
 
 //create 6 random numbers to an array
 const die1 = new MakeNewDice("dice1");
@@ -127,8 +130,6 @@ async function endTurn(){
     //   stealButton.removeAttribute('disabled')
     //   stealButton.classList.add('steal-active');
     //   turnOrder();
-    //   await wait(5000);
-    //   resetAllDice();
     // }
       resetAllDice();
       turnOrder();
@@ -218,7 +219,7 @@ function calculateRollScore(selectedDice) {
   
   for (const key of Object.keys(scoreTracker)) {
     const dieValue = Number(key);
-    let dieBaseScore = dieValue === 1 ? 10 : dieValue * 100;
+    let dieBaseScore = dieValue === 1 ? 10 : dieValue;
 
     if (scoreTracker[dieValue] === 6) {
       currentRollScore += dieBaseScore * 400;
@@ -257,4 +258,14 @@ function renderDiceValue(die) {
 
 function renderCurrentScore() {
   scoreBoard.innerText = currentTurnScore;
+}
+
+function renderCurrentPlayer(){
+  const playerAvatar = document.querySelector('.player-avatar');
+  const playerName = document.querySelector('.player-name');
+  const playerScore = document.querySelector('.player-total-score');
+  playerName.innerText = currentPlayer.name;
+  playerAvatar.style.backgroundColor = currentPlayer.avatarColor;
+  playerAvatar.innerText = currentPlayer.name[0];
+  playerScore.innerText = currentPlayer.totalScore;
 }
