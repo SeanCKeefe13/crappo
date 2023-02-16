@@ -7,6 +7,7 @@ const stealButton = document.getElementById('stealButton');
 const endTurnButton = document.getElementById("endTurn");
 const newPlayerButton = document.querySelector(".add-new-player");
 const diceDiv = document.querySelectorAll("div .dice");
+const gameLog = document.querySelector(".game-log")
 //console.log(diceDiv);
 const scoreBoard = document.querySelector(".score-board");
 
@@ -94,7 +95,7 @@ function rollActiveDice() {
   diceArr.forEach(function (die) {
       
     if (!die.locked) {
-        console.log(92, 'ROLLING');
+        // console.log(92, 'ROLLING');
       die.value = rollDice();
       //console.log(die);
     }
@@ -114,8 +115,8 @@ function rollActiveDice() {
 }
 
 //let next player decide to steal current roll.
-const wait = (amount = 0) => new Promise(resolve => setTimeout(resolve, amount));
-async function stealCurrentRoll(){
+// const wait = (amount = 0) => new Promise(resolve => setTimeout(resolve, amount));
+function stealCurrentRoll(){
   rollActiveDice();
   stealButton.setAttribute('disabled');
   stealButton.classList.remove('steal-active')
@@ -123,7 +124,7 @@ async function stealCurrentRoll(){
 }
 
     //end turn function
-async function endTurn(){
+function endTurn(){
     currentPlayer.totalScore += currentTurnScore;
     currentPlayer.isFirstRoll = true;
     // if(players[1].totalScore >= 5000){
@@ -131,12 +132,20 @@ async function endTurn(){
     //   stealButton.classList.add('steal-active');
     //   turnOrder();
     // }
+      updateGameLog(currentPlayer, currentTurnScore)
       resetAllDice();
       turnOrder();
       currentTurnScore = 0;
       renderCurrentScore();
       return currentPlayer.totalScore;
     }
+function updateGameLog(player, score){
+  const diceText = diceArr.map(die => die.value).join(',');
+  const logText = `${player.name} rolled ${diceText} and scored:${score}`;
+  const logElement = document.createElement('li');
+  logElement.innerText = logText;
+  gameLog.prepend(logElement);
+}
 
 //reset all dice if all dice have been selected for scoring values
 function reRollLockedDiceHandler() {
@@ -192,7 +201,7 @@ function calculateDiceCount(dice) {
   for (const die of dice) {
     scoreTracker[die.value] += 1;
   }
-console.log(176, scoreTracker);
+// console.log(176, scoreTracker);
   return scoreTracker;
 }
     
@@ -248,8 +257,6 @@ function calculateRollScore(selectedDice) {
   return currentRollScore;
 }
 //STEAL BUTTON/FUNCTIONS
-
-//TURN ORDER
 
 //RENDER AND UPDATE UI
 function renderDiceValue(die) {
