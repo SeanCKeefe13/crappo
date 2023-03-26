@@ -13,6 +13,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css
 ">
+    <link rel="stylesheet" type="text/css" href="tooltipster-master/dist/css/tooltipster.bundle.css" />
+    <link rel="stylesheet" type="text/css" href="tooltipster-master/dist/css/plugins/tooltipster/sideTip/themes/tooltipster-sideTip-shadow.min.css" />
+
+    <link href='jquery-tourbus-master/dist/jquery-tourbus.min.css' media='all' rel='stylesheet' type='text/css' />
     <link rel="stylesheet" href="./crappoStyle.css">
 </head>
 
@@ -20,9 +24,65 @@
     <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
+    <ol class='tourbus-legs' id='my-tour-id'>
+
+            <li data-align='right' data-arrow="90%" data-el=".add-new-player">
+              <h2>Adding a player</h2>
+              <p>Click here to add players to the game</p>
+              <a href='javascript:void(0);' class='tourbus-next'>Next...</a>
+            </li>
+          
+            <li data-el='#rollDice' data-align='center' data-width="400px" data-orientation="top">
+              <h2>Roll Button</h2>
+              <p>
+                By pressing the roll button, the player rolls all unlocked dice.
+                Dice that score points are locked and wont be rolled again until all dice have scored or the turn ends.
+                Points can be scored as follows: 
+            </p>
+                <ul>
+                    <li>1 = 100 points</li>
+                    <li>5 = 50 points</li>
+                    <li>3 of the same dice value is 100 x dice face</li>
+                    <li>4 of the same dice value is 200 x dice face</li>
+                    <li>5 of the same dice value is 300 x dice face</li>
+                    <li>6 of the same dice value is 400 x dice face</li>
+                </ul>
+              <a href='javascript:void(0);' class='tourbus-next'>Next...</a>
+            </li>
+            <li data-el='#rollDice' data-align='center' data-width="400px" data-orientation="top">
+                <h2>Addtional scoring rules</h2>
+                  <ul>
+                      <li>Rolling 1, 2, 3, 4, 5, 6 = 5000 points</li>
+                      <li>Rolling no scoring dice on your initial roll is CRAPPO -500 points</li>
+                      <li>Rolling 3 or more 1's is 10 x points value that would be awarded (eg. 3 1's is 1000 points)</li>
+                  </ul>
+                <a href='javascript:void(0);' class='tourbus-next'>Next...</a>
+              </li>
+              <li data-el='#stealButton' data-align='center' data-width="400px" data-orientation="top">
+                <h2>Stealing current remaining dice</h2>
+                  <p>
+                    If the next players total score is greater than 5000 points, 
+                    they may choose to steal the current players board and start their turn with the remaining dice.
+                    If the stealing player does not score on this roll, they do not get CRAPPO but they do not keep the stolen points and their turn ends.
+                  </p>
+                <a href='javascript:void(0);' class='tourbus-next'>Next...</a>
+              </li>
+              <li data-el='#endTurn' data-align='center' data-width="400px" data-orientation="top">
+                <h2>Ending your turn</h2>
+                  <p>
+                    There are 3 ways a turn is ended.
+                    If you do not score on your initial roll, you have rolled CRAPPO and loose points.
+                    If you choose to roll your remaining dice and score no points your turn ends and you gain no points from this turn.
+                    You may choose to end your turn, keeping all points earned this turn.
+                  </p>
+                <a href='javascript:void(0);' class='tourbus-next'>Next...</a>
+              </li>
+          
+    </ol>
     <div class="page-container">
-        <div class="add-player-container">
-            <button class="add-new-player"><i class="bi bi-person-plus"></i></button>
+        <div class="menu-container">
+            <button class="reset-tutorial-button menu-button tooltip" title="Show tutorial">?</button>
+            <button class="add-new-player menu-button"><i class="bi bi-person-plus"></i></button>
         </div>
         <div class="player-top-container">
             <div class="player-card-container">
@@ -50,17 +110,20 @@
             </div>
         <div class="turn-control-container">
                 <button id="rollDice" class="notPlayerTurn">Roll</button>
-                <button id="stealButton">Steal</button>
+                <button class="steal-button">Steal</button>
                 <button id="endTurn" class="notPlayerTurn">End Turn</button>
         </div>
-        <div class="game-log">
-                
+        <div class="game-log-container">
+            <div class="game-log"></div>
         </div>
 </div>
 
 
-
-    <script src="crappo.js" async defer></script>
+<script src='jquery-3.6.4.min.js'></script>
+<script src='jquery-tourbus-master/dist/jquery-tourbus.min.js'></script>
+<script type="text/javascript" src="tooltipster-master/dist/js/tooltipster.bundle.js"></script>
+<script type="text/javascript" src="tooltipster-master/dist/js/plugins/tooltipster/SVG/tooltipster-SVG.js"></script>
+<script src="crappo.js" async defer></script>
 </body>
 
 </html>

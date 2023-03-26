@@ -3,19 +3,21 @@
 //SELECT HTML ELEMENTS
 
 const rollDiceButton = document.getElementById("rollDice");
-const stealButton = document.getElementById('stealButton');
+const stealButton = document.querySelector('.steal-button');
 const endTurnButton = document.getElementById("endTurn");
 const newPlayerButton = document.querySelector(".add-new-player");
 const diceDiv = document.querySelectorAll("div .dice");
 const gameLog = document.querySelector(".game-log")
+const resetTutorialButton = document.querySelector(".reset-tutorial-button")
 //console.log(diceDiv);
 const scoreBoard = document.querySelector(".score-board");
 
 //EVENT LISTENERS
 rollDiceButton.addEventListener("click", rollActiveDice);
 endTurnButton.addEventListener("click", endTurn);
-stealButton.addEventListener('click', stealCurrentRoll);
+stealButton.addEventListener('click', () => endTurn(true));
 newPlayerButton.addEventListener('click', addNewPlayer)
+resetTutorialButton.addEventListener('click', resetTutorial)
 //diceDiv.forEach((dice) => dice.addEventListener("click", selectDice));
 
 //CLASS AND CREATING GAME OBJECTS
@@ -33,29 +35,29 @@ class MakeNewDice {
 
 //player character class
 class NewPlayer {
-    constructor(name, color) {
-        this.name = name;
-        this.totalScore = 0;
-        this.isFirstRoll = true;
-        this.avatarColor = color;
-    }
+  constructor(name, color) {
+    this.name = name;
+    this.totalScore = 0;
+    this.isFirstRoll = true;
+    this.avatarColor = color;
+  }
 }
 const players = [];
 let currentPlayer = null;
 //make new player function
 const avatarColors = ['#FF5722', '#E91E63', '#9C27B0', '#673AB7', '#3F51B5', '#2196F3', '#03A9F4', '#00BCD4', '#009688', '#4CAF50', '#FFC107', '#FF9800']
-function addNewPlayer(){
+function addNewPlayer() {
   let randomIndex = Math.floor(Math.random() * (avatarColors.length));
   const color = avatarColors[randomIndex];
 
-    const name = prompt('Enter your Name');
-    players.push(new NewPlayer(name, color));
-    currentPlayer = players[0]
-    renderCurrentPlayer();
+  const name = prompt('Enter your Name');
+  players.push(new NewPlayer(name, color));
+  currentPlayer = players[0]
+  renderCurrentPlayer();
 }
 
 //turn order tracking function
-function turnOrder(){
+function turnOrder() {
   let endingTurnPlayer;
   players.push(players.shift());
   currentPlayer = players[0];
@@ -75,12 +77,12 @@ const diceArr = [die1, die2, die3, die4, die5, die6];
 
 //GAME ACTIVITY FUNCTIONS
 
-        //roll dice function
+//roll dice function
 function rollDice() {
-    currentPlayer.isFirstRoll = false;
-    return Math.floor(Math.random() * 6 + 1);
-  }
-    //roll dice function
+  currentPlayer.isFirstRoll = false;
+  return Math.floor(Math.random() * 6 + 1);
+}
+//roll dice function
 function rollActiveDice() {
   diceArr.forEach(function (die) {
     //lock dice
@@ -91,11 +93,11 @@ function rollActiveDice() {
   });
 
   reRollLockedDiceHandler();
-    //roll available dice
+  //roll available dice
   diceArr.forEach(function (die) {
-      
+
     if (!die.locked) {
-        // console.log(92, 'ROLLING');
+      // console.log(92, 'ROLLING');
       die.value = rollDice();
       //console.log(die);
     }
@@ -112,36 +114,46 @@ function rollActiveDice() {
     currentTurnScore += calculateRollScore(selectedDice);
   }
   renderCurrentScore();
+  updateStealButton();
 }
 
-//let next player decide to steal current roll.
-// const wait = (amount = 0) => new Promise(resolve => setTimeout(resolve, amount));
-function stealCurrentRoll(){
-  rollActiveDice();
-  stealButton.setAttribute('disabled');
-  stealButton.classList.remove('steal-active')
-  clearTimeout(wait);
+function updateStealButton() {
+  const nextPlayer = players[1];
+
+  console.log('steal button', currentPlayer.isFirstRoll, currentTurnScore, nextPlayer.totalScore)
+
+  if (!currentPlayer.isFirstRoll && currentTurnScore > 0 && nextPlayer.totalScore >= 1) {
+    stealButton.removeAttribute('disabled')
+    stealButton.classList.add('steal-active');
+  } else {
+    stealButton.setAttribute('disabled', "true");
+    stealButton.classList.remove('steal-active');
+  }
+
 }
 
-    //end turn function
-function endTurn(){
-    currentPlayer.totalScore += currentTurnScore;
-    currentPlayer.isFirstRoll = true;
-    // if(players[1].totalScore >= 5000){
-    //   stealButton.removeAttribute('disabled')
-    //   stealButton.classList.add('steal-active');
-    //   turnOrder();
-    // }
-      updateGameLog(currentPlayer, currentTurnScore)
-      resetAllDice();
-      turnOrder();
-      currentTurnScore = 0;
-      renderCurrentScore();
-      return currentPlayer.totalScore;
-    }
-function updateGameLog(player, score){
+//end turn function
+function endTurn(isSteal) {
+  currentPlayer.totalScore += currentTurnScore;
+  currentPlayer.isFirstRoll = true;
+  // if(players[1].totalScore >= 5000){
+  //   turnOrder();
+  // }
+  updateGameLog(currentPlayer, currentTurnScore)
+  if (!isSteal) {
+    resetAllDice();
+    currentTurnScore = 0;
+  }
+  turnOrder();
+  updateStealButton();
+
+
+  renderCurrentScore();
+  return currentPlayer.totalScore;
+}
+function updateGameLog(player, score) {
   const diceText = diceArr.map(die => die.value).join(',');
-  const logText = `${player.name} rolled ${diceText} and scored:${score}`;
+  const logText = `${player.name} ended turn with ${diceText} and scored:${score}`;
   const logElement = document.createElement('li');
   logElement.innerText = logText;
   gameLog.prepend(logElement);
@@ -166,7 +178,7 @@ function resetAllDice() {
 }
 
 //select dice div: deactivate dice div to stop rolls, collect value for score tracking
-    //select and deactivate dice
+//select and deactivate dice
 function selectDice(targetDie) {
   targetDie.selected = !targetDie.selected;
 
@@ -176,7 +188,7 @@ function selectDice(targetDie) {
     targetDie.element.classList.remove("selected");
   }
 }
-    //auto select scoring dice
+//auto select scoring dice
 function selectScoringDice() {
   const unlockedDice = diceArr.filter((die) => !die.locked);
   const scoreTracker = calculateDiceCount(unlockedDice);
@@ -186,7 +198,7 @@ function selectScoringDice() {
     }
   });
 }
-    //update selected dice to scoreTracker
+//update selected dice to scoreTracker
 function calculateDiceCount(dice) {
   const scoreTracker = {
     1: 0,
@@ -196,16 +208,16 @@ function calculateDiceCount(dice) {
     5: 0,
     6: 0,
   };
-  
+
 
   for (const die of dice) {
     scoreTracker[die.value] += 1;
   }
-// console.log(176, scoreTracker);
+  // console.log(176, scoreTracker);
   return scoreTracker;
 }
-    
-    //calculate score with dice value + test for possible score values
+
+//calculate score with dice value + test for possible score values
 let currentTurnScore = 0;
 function calculateRollScore(selectedDice) {
   // console.log(die)
@@ -218,14 +230,14 @@ function calculateRollScore(selectedDice) {
     //run endTurn function here
     return currentRollScore;
   }
-    
+
   //potential score conditions
   if (Object.values(scoreTracker).every((val) => val === 1)) {
     currentRollScore += 5000;
     return currentRollScore;
   }
 
-  
+
   for (const key of Object.keys(scoreTracker)) {
     const dieValue = Number(key);
     let dieBaseScore = dieValue === 1 ? 10 : dieValue;
@@ -267,7 +279,7 @@ function renderCurrentScore() {
   scoreBoard.innerText = currentTurnScore;
 }
 
-function renderCurrentPlayer(){
+function renderCurrentPlayer() {
   const playerAvatar = document.querySelector('.player-avatar');
   const playerName = document.querySelector('.player-name');
   const playerScore = document.querySelector('.player-total-score');
@@ -276,3 +288,28 @@ function renderCurrentPlayer(){
   playerAvatar.innerText = currentPlayer.name[0];
   playerScore.innerText = currentPlayer.totalScore;
 }
+
+function resetTutorial() {
+  window.localStorage.removeItem("isTutorialCompleted")
+  tour.trigger("depart.tourbus")
+}
+let tour
+$(window).on('load', function () {
+  const isCompleted = window.localStorage.getItem("isTutorialCompleted")
+  tour = $('#my-tour-id').tourbus({
+    onStop: () => {
+      window.localStorage.setItem("isTutorialCompleted", "true")
+    }
+  });
+
+  if (!isCompleted) {
+    tour.trigger("depart.tourbus")
+  }
+
+  console.log('are we ready???')
+  $('.tooltip').tooltipster({
+    theme: "tooltipster-shadow"
+  });
+});
+
+
